@@ -1,1 +1,1 @@
-import './global/Counter.vue';
+// import './global/Counter.vue';

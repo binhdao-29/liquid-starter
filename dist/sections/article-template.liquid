@@ -1,180 +1,119 @@
-<!-- /templates/article.liquid -->
-{% assign number_of_comments = article.comments_count %}
+<div class="section-header text-center">
+  <h1 class="article__title" id="title-0">{{ article.title }}</h1>
+  {% if section.settings.blog_show_author %}
+    <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+  {% endif %}
 
-{% if comment and comment.created_at %}
-  {% assign number_of_comments = article.comments_count | plus: 1 %}
+  {% if section.settings.blog_show_date %}
+    <span class="article__date">
+      {{ article.published_at | time_tag: format: 'date' }}
+    </span>
+  {% endif %}
+</div>
+
+<div class="rte">
+  {{ article.content }}
+</div>
+
+{% if section.settings.show_share_buttons %}
+  {% include 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
 {% endif %}
-
-<div class="grid">
-  <article class="grid__item large--five-sixths push--large--one-twelfth article" itemscope itemtype="http://schema.org/Article">
-
-    <header class="section-header text-center">
-      <h1>{{ article.title }}</h1>
-      <hr class="hr--small">
-      <p>
-        <span class="date"><time datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' }}">{{ article.published_at | date: format: 'date' }}</time></span>
-      </p>
-    </header>
-
-    <div class="grid">
-      <div class="grid__item large--four-fifths push--large--one-tenth">
-
-        <div class="rte rte--indented-images" itemprop="articleBody">
-          {{ article.content }}
-        </div>
-
-        <ul class="tags tags--article inline-list">
-          {% include 'tags-article' %}
-        </ul>
-
-        {% if section.settings.social_sharing_blog %}
-          {% include 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
-        {% endif %}
-
-        {% if blog.comments_enabled? %}
-
-          {% if number_of_comments > 0 %}
-            <hr class="hr--large">
-            <h2 class="h3 text-center">{{ 'blogs.comments.with_count' | t: count: number_of_comments }}</h2>
-            <hr class="hr--small hr--clear">
-          {% endif %}
-
-          {% paginate article.comments by 5 %}
-            {% comment %}
-              #comments is required, it is used as an anchor link by Shopify.
-            {% endcomment %}
-            <div id="comments">
-
-              {% if comment and comment.created_at %}
-                <p class="note form-success">
-                  {% if blog.moderated? %}
-                    {{ 'blogs.comments.success_moderated' | t }}
-                  {% else %}
-                    {{ 'blogs.comments.success' | t }}
-                  {% endif %}
-                </p>
-              {% endif %}
-
-              {% if number_of_comments > 0 %}
-                <ul class="no-bullets">
-                  {% comment %}
-                    If a comment was just submitted with no blank field, show it.
-                  {% endcomment %}
-                  {% if comment and comment.created_at %}
-                    <li id="{{ comment.id }}" class="comment first{% if article.comments_count == 0 %} last{% endif %}">
-                      {% include 'comment' %}
-                    </li>
-                  {% endif %}
-
-                  {% comment %}
-                    Showing the rest of the comments.
-                  {% endcomment %}
-                  {% for comment in article.comments %}
-                    <li id="{{ comment.id }}" class="comment{% unless number_of_comments > article.comments_count %}{% if forloop.first %} first{% endif %}{% endunless %}{% if forloop.last %} last {% endif %}">
-                      {% include 'comment' %}
-                    </li>
-
-                    {% unless forloop.last %}
-                      <li><hr class="hr--clear"></li>
-                    {% endunless %}
-                  {% endfor %}
-                </ul>
-
-                {% if paginate.pages > 1 %}
-                  {% include 'pagination' %}
-                {% endif %}
-
-              {% endif %}
-
-              <hr class="hr--large">
-
-              <h2 class="h3 text-center">{{ 'blogs.comments.title' | t }}</h2>
-              <hr class="hr--small hr--clear">
-
-              <div class="form-vertical">
-                {% form 'new_comment', article %}
-
-                  {{ form.errors | default_errors }}
-
-                  <div class="grid grid--small">
-                    <div class="grid__item large--one-half">
-                      <label for="CommentAuthor" class="hidden-label">{{ 'blogs.comments.name' | t }}</label>
-                      <input class="input-full{% if form.errors contains 'author' %} error{% endif %}" type="text" name="comment[author]" placeholder="{{ 'blogs.comments.name' | t }}" id="CommentAuthor" value="{{ form.author }}" autocapitalize="words">
-                    </div>
-                    <div class="grid__item large--one-half">
-                      <label for="CommentEmail" class="hidden-label">{{ 'blogs.comments.email' | t }}</label>
-                      <input class="input-full{% if form.errors contains 'email' %} error{% endif %}" type="email" name="comment[email]" placeholder="{{ 'blogs.comments.email' | t }}" id="CommentEmail" value="{{ form.email }}" autocorrect="off" autocapitalize="off">
-                    </div>
-                  </div>
-
-                  <label for="CommentBody" class="hidden-label">{{ 'blogs.comments.message' | t }}</label>
-                  <textarea class="input-full{% if form.errors contains 'body' %} error{% endif %}" name="comment[body]" id="CommentBody" placeholder="{{ 'blogs.comments.message' | t }}">{{ form.body }}</textarea>
-
-                  <div class="text-center">
-                    {% if blog.moderated? %}
-                      <p>{{ 'blogs.comments.moderated' | t }}</p>
-                    {% endif %}
-
-                    <input type="submit" class="btn" value="{{ 'blogs.comments.post' | t }}">
-                  </div>
-
-                {% endform %}
-              </div>
-
-            </div>
-          {% endpaginate %}
-        {% endif %}
-
-      </div>
-    </div>
-
-  </article>
-</div>
-
-<hr class="hr--medium hr--clear">
-<div class="text-center">
-  <a href="{{ blog.url }}" class="return-link">&larr; {{ 'blogs.article.back_to_blog' | t: title: blog.title }}</a>
-</div>
 
 
 
 {% schema %}
 {
   "name": {
-    "cs": "Stránky s články",
-    "da": "Artikelsider",
-    "de": "Artikelseiten",
-    "en": "Article pages",
-    "es": "Páginas del artículo",
-    "fi": "Artikkelisivut",
-    "fr": "Pages d'articles",
-    "it": "Pagine articoli",
-    "ja": "記事ページ",
-    "ko": "문서 페이지",
-    "nb": "Artikkelsider",
-    "nl": "Artikelpagina's",
-    "pl": "Strony artykułów",
-    "pt-BR": "Páginas do artigo",
-    "pt-PT": "Páginas de artigo",
-    "sv": "Artikelsidor",
-    "th": "หน้าบทความ",
-    "tr": "Makale sayfaları",
-    "vi": "Trang bài viết",
-    "zh-CN": "文章页面",
-    "zh-TW": "文章頁面"
+    "cs": "Příspěvky",
+    "da": "Opslag",
+    "de": "Posts",
+    "en": "Posts",
+    "es": "Publicaciones",
+    "fi": "Julkaisut",
+    "fr": "Articles",
+    "it": "Articoli",
+    "ja": "投稿",
+    "ko": "게시물",
+    "nb": "Innlegg",
+    "nl": "Berichten",
+    "pl": "Posty",
+    "pt-BR": "Posts",
+    "pt-PT": "Publicações",
+    "sv": "Inlägg",
+    "th": "โพสต์",
+    "tr": "Gönderiler",
+    "vi": "Bài viết",
+    "zh-CN": "文章",
+    "zh-TW": "貼文"
   },
   "settings": [
     {
       "type": "checkbox",
-      "id": "social_sharing_blog",
+      "id": "blog_show_author",
+      "label": {
+        "cs": "Zobrazit autora",
+        "da": "Vis forfatter",
+        "de": "Autor anzeigen",
+        "en": "Show author",
+        "es": "Mostrar autor",
+        "fi": "Näytä tekijä",
+        "fr": "Afficher l'auteur",
+        "it": "Mostra autore",
+        "ja": "執筆者を表示する",
+        "ko": "작성자 표시",
+        "nb": "Vis forfatter",
+        "nl": "Auteur weergeven",
+        "pl": "Pokaż autora",
+        "pt-BR": "Exibir autor",
+        "pt-PT": "Mostrar autor",
+        "sv": "Visa författare",
+        "th": "แสดงผู้เขียน",
+        "tr": "Yazarı göster",
+        "vi": "Hiển thị tác giả",
+        "zh-CN": "显示作者",
+        "zh-TW": "顯示作者"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_date",
+      "label": {
+        "cs": "Zobrazit datum",
+        "da": "Vis dato",
+        "de": "Datum anzeigen",
+        "en": "Show date",
+        "es": "Mostrar fecha",
+        "fi": "Näytä päivämäärä",
+        "fr": "Afficher la date",
+        "it": "Mostra data",
+        "ja": "日付を表示する",
+        "ko": "날짜 표시",
+        "nb": "Vis dato",
+        "nl": "Datum weergeven",
+        "pl": "Pokaż datę",
+        "pt-BR": "Exibir data",
+        "pt-PT": "Mostrar data",
+        "sv": "Visa datum",
+        "th": "แสดงวันที่",
+        "tr": "Tarihi göster",
+        "vi": "Hiển thị ngày",
+        "zh-CN": "显示日期",
+        "zh-TW": "顯示日期"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share_buttons",
       "label": {
         "cs": "Zobrazit tlačítka pro sdílení na sociálních sítích",
         "da": "Vis knapper til deling på sociale medier",
-        "de": "Social-Sharing-Schaltflächen anzeigen",
+        "de": "Buttons für Social Media anzeigen",
         "en": "Show social sharing buttons",
         "es": "Mostrar botones para compartir en redes sociales",
         "fi": "Näytä sosiaalisen median jakamispainikkeet",
-        "fr": "Afficher les boutons de partage social",
+        "fr": "Afficher les boutons de partage sur les médias sociaux",
         "it": "Mostra i pulsanti per la condivisione sui social",
         "ja": "ソーシャルメディアでの共有ボタンを表示する",
         "ko": "소셜 공유 버튼 표시",

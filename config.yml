@@ -1,6 +1,6 @@
 development:
-  password: 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
-  theme_id: "118937878711"
-  store: phungmanh.myshopify.com
+  password: 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
+  theme_id: "123563770031"
+  store: congbinh.myshopify.com
   ignore_files:
   - config/settings_data.json

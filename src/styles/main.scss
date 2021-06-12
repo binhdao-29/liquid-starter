@@ -10,7 +10,7 @@
 @import
   'vendors/normalize';
 @import
-  'vendors/bootstrap';
+  './vendors/bootstrap';
 
 // 3. Base stuff
 @import
@@ -35,3 +35,8 @@
 // 7. Themes
 @import
   'themes/default';
+
+// 8. About1
+
+@import 
+  './about1/section'

@@ -1,4 +1,4 @@
-{% assign display_map = false %}
+{%- assign display_map = false -%}
 {%- assign onboarding = false -%}
 {%- assign bg_image = section.settings.background_image -%}
 
@@ -15,7 +15,7 @@
     background-position: {{ section.settings.background_image_position }};
   }
 
-  @media only screen and (max-width: 769px) {
+  @media only screen and (max-width: 750px) {
     #MapSection--{{ section.id }} .map-section__image {
       padding-top: {{ 1 | divided_by: bg_image.aspect_ratio | times: 100 }}%;
     }
@@ -23,32 +23,32 @@
   {% endif %}
 </style>
 
+
 <div id="MapSection--{{ section.id }}"
      class="map-section
-          {% if display_map %}map-section--display-map{% endif %}
-          {% if onboarding == true %}map-section--onboarding{% endif %}"
+           {% if display_map %}map-section--display-map{% endif %}
+           {% if onboarding == true %}map-section--onboarding{% endif %}"
      data-section-id="{{ section.id }}"
      data-section-type="map">
-  <div class="wrapper map-section__wrapper">
-    <div class="map-section__content-wrapper flex--third">
+  <div class="page-width map-section__wrapper">
+    <div class="map-section__content-wrapper">
       <div class="map-section__content">
+        <h2 class="visually-hidden visually-hidden--static">{{ 'sections.map.section_heading' | t }}</h2>
         {% if section.settings.heading != blank %}
           <h3 class="h4">{{ section.settings.heading | escape }}</h3>
         {% endif %}
         {% if section.settings.address != blank %}
-          <div class="rte">{{ section.settings.address }}</div>
+          <div class="rte-setting">{{ section.settings.address }}</div>
           {% if section.settings.map_address != blank and section.settings.button_text != blank %}
             <p>
               <a href="https://maps.google.com?daddr={{ section.settings.map_address | escape }}"
-                 class="btn btn--secondary map_section__directions-btn"
+                 class="btn btn--secondary btn--small map_section__directions-btn"
                  target="_blank"
+                 rel="noopener"
+                 aria-describedby="a11y-new-window-external-message"
               >
-                {% if section.settings.show_pin %}
-                  <span class="icon icon-pin" aria-hidden="true"></span>
-                {% endif %}
-                {% if section.settings.button_text %}
-                  <span>{{ section.settings.button_text | escape }}</span>
-                {% endif %}
+                {% if section.settings.show_pin %}{% include 'icon-pin' %}{% endif %}
+                <span>{{ section.settings.button_text | escape }}</span>
               </a>
             </p>
           {% endif %}
@@ -56,12 +56,12 @@
       </div>
     </div>
     <div class="map-section__background-wrapper">
-      {% if bg_image.src != blank %}
+      {% if bg_image != blank %}
         <div class="map-section__image lazyload js"
              data-bgset="{% include 'bgset', image: bg_image %}"
              data-sizes="auto"
              data-parent-fit="cover"
-             style="background-image: url('{{ bg_image | img_url: '300x300' }});">
+             data-image-loading-animation>
         </div>
         <noscript>
           <div class="map-section__image" style="background-image: url({{ bg_image | img_url: 'x800', crop: 'top' }});"></div>
@@ -111,7 +111,7 @@
     "zh-CN": "地图",
     "zh-TW": "地圖"
   },
-  "class": "index-section index-map-section shopify-section--full-width",
+  "class": "index-section index-section--flush-medium-up",
   "settings": [
     {
       "type": "header",
@@ -120,7 +120,7 @@
         "da": "Tekst",
         "de": "Text",
         "en": "Text",
-        "es": "texto",
+        "es": "Texto",
         "fi": "Teksti",
         "fr": "Texte",
         "it": "Testo",
@@ -145,11 +145,11 @@
       "label": {
         "cs": "Nadpis",
         "da": "Overskrift",
-        "de": "Überschrift",
+        "de": "Titel",
         "en": "Heading",
         "es": "Título",
         "fi": "Otsake",
-        "fr": "Titre",
+        "fr": "En-tête",
         "it": "Heading",
         "ja": "見出し",
         "ko": "제목",
@@ -168,7 +168,7 @@
       "default": {
         "cs": "Náš obchod",
         "da": "Vores butik",
-        "de": "Unser Shop",
+        "de": "Unser Laden",
         "en": "Our store",
         "es": "Nuestra tienda",
         "fi": "Kauppamme",
@@ -206,7 +206,7 @@
         "nb": "Adresse og åpningstider",
         "nl": "Adres en openingstijden",
         "pl": "Adres i godziny",
-        "pt-BR": "Endereço e horas",
+        "pt-BR": "Endereço e horário",
         "pt-PT": "Endereço e horas",
         "sv": "Adress och öppettider",
         "th": "ที่อยู่และเวลาทำการ",
@@ -218,18 +218,18 @@
       "default": {
         "cs": "<p>Název ulice 123<br>Praha, Česká republika</p><p>Po–Pá 10:00–21:00<br>So 11:00–21:00<br>Ne 11:00–17:00</p>",
         "da": "<p>123 Fake St.<br>Toronto, Canada</p><p>mandag-fredag, 10.00- 21.00<br>lørdag 11.00-21.00&lt;br&gt;søndag 11.00-17.00</p>",
-        "de": "<p>Musterstr. 123<br>Musterstadt, Deutschland</p><p>Mo – Fr: 10:00 – 21:00 Uhr<br>Samstag: 11:00 – 21:00 Uhr<br>Sonntag: 11:00 – 17:00 Uhr</p>",
+        "de": "<p>Musterstraße 123<br>12345 Musterstadt</p><p>Mo - Fr, 10 - 21 Uhr<br>Samstag, 11 - 21 Uhr<br>Sonntag, Ruhetag</p>",
         "en": "<p>123 Fake St.<br>Toronto, Canada</p><p>Mon - Fri, 10am - 9pm<br>Saturday, 11am - 9pm<br>Sunday, 11am - 5pm</p>",
-        "es": "<p>123 Fake St. <br> Toronto, Canadá</p><p>Mon - Vie, 10 a.m. - 9 p.m. <br> Sábados, de 11:00am a 09:00pm <br> Domingo, de 11:00am a 05:00pm</p>",
+        "es": "<p>123 Fake St. <br> Toronto, Canadá</p><p>Lun - Vie, 10 a.m. - 9 p.m. <br> Sábados, de 11 am a 09 pm <br> Domingos, de 11 am a 05 pm</p>",
         "fi": "<p>Esimerkkikatu 5<br>Helsinki, Suomi</p><p>Maanantai–perjantai klo 10–21<br>Lauantai klo 11–21<br>Sunnuntai klo 11–17</p>",
-        "fr": "<p>123 rue inventée<br>Paris, France</p><p>Lun. - ven., 10 h - 21 h<br>Samedi, 11 h - 21 h<br>Dimanche, 11 h - 17 h</p>",
+        "fr": "<p>123 5e Avenue<br>Toronto, Canada</p><p>Lundi au vendredi, 10 h 00 à 21 h 00<br>Samedi, 11 h 00 à 21 h 00<br>Dimanche, fermé",
         "it": "<p>123 Fake St.<br>Toronto, Canada</p><p>Lun-Ven, 10:00 - 21:00<br>Sabato, 11:00 - 21:00<br>Domenica, 11:00 - 17:00</p>",
         "ja": "<p>123 Fake St.<br>Toronto, Canada</p><p>月曜日～金曜日、午前10時〜午後9時<br>土曜日、午前11時〜午後9時<br>日曜日、午前11時〜午後5時</p>",
         "ko": "<p>캐나다, <br>토론토 페이크 스트리트123</p><p>월요일 - 금요일, 오전 10시 - 오후 9시<br>토요일, 11시 - 오후 5시</p>",
         "nb": "<p>Eksempelgaten 123<br>Oslo, Norge</p><p>Man – Fre, 10 – 21<br>Lørdag, 11 – 21<br>Søndag, 11–17</p>",
         "nl": "<p>Dorpsweg 1<br>Arnhem, Nederland</p><p>ma - vr, 10:00 - 21:00<br>zaterdag, 11:00 - 21:00<br>zondag, 11:00 - 17:00</p>",
         "pl": "<p>ul. Przykładowa 123<br>Warszawa, Polska</p><p>Pon - Pt 10:00 - 21:00<br>Sobota 11:00 - 21:00<br>Niedziela 11:00 - 17:00</p>",
-        "pt-BR": "<p>123 Fake St. <br> Toronto, Canadá</p><p>Seg. - Sex., 10h - 21h <br> Sábado, 11h às 21h <br> Domingo, 11h às 17h</p>",
+        "pt-BR": "<p>123 Rua Inventada<br> São Paulo, Brasil</p><p>Seg. - Sex., 10h às 21h <br> Sábado, 11h às 21h <br> Domingo, 11h às 17h</p>",
         "pt-PT": "<p>Rua Imaginária, 123<br>Lisboa, Portugal</p><p>Seg. - Sex., 10h - 21h<br> Sábado, 11h - 21h<br>Domingo, 11h - 17h</p>",
         "sv": "<p>Exempelgatan 123<br>Stockholm, Sverige</p><p>Mån - Fre, 10.00 - 21.00<br>Lördag, 11.00 - 21.00<br>Söndag, 11.00 - 17.00</p>",
         "th": "<p>123 Fake St.<br>Toronto, Canada</p><p>จ. - ศ. 10:00 น. - 21:00 น.<br>วันเสาร์ 11:00 น. - 21:00 น.<br>วันอาทิตย์ 11:00 น. - 17:00 น.</p>",
@@ -245,11 +245,11 @@
       "label": {
         "cs": "Najít adresu na mapě",
         "da": "Kortadresse",
-        "de": "Adresse auf der Karte",
+        "de": "Adresse",
         "en": "Map address",
-        "es": "Dirección del mapa",
+        "es": "Dirección en el mapa",
         "fi": "Määritä osoite",
-        "fr": "Adresse sur la carte",
+        "fr": "Adresse de la carte",
         "it": "Indirizzo su mappa",
         "ja": "マップアドレス",
         "ko": "지도 주소",
@@ -268,11 +268,11 @@
       "info": {
         "cs": "Mapy Google vyhledají přesnou lokalitu",
         "da": "Google Maps finder den nøjagtige lokation",
-        "de": "Google Maps findet den genauen Standort",
+        "de": "Google Maps findet die richtige Adresse",
         "en": "Google Maps will find the exact location",
         "es": "Google Maps encontrará la ubicación exacta",
         "fi": "Google Maps hakee tarkan sijainnin",
-        "fr": "Google Maps trouvera l'emplacement exact",
+        "fr": "Google Maps trouvera l'adresse exacte",
         "it": "Google Maps troverà l'esatta posizione",
         "ja": "Googleマップが正確な位置を見つけます。",
         "ko": "Google 지도에서 정확한 위치를 찾습니다.",
@@ -285,31 +285,31 @@
         "th": "Google Maps จะค้นหาตำแหน่งที่ตั้งที่แน่นอน",
         "tr": "Google Haritalar tam konumu bulur",
         "vi": "Google Maps sẽ tìm vị trí chính xác",
-        "zh-CN": "Google 地图会显示确切位置",
+        "zh-CN": "Google 地图会显示确切地点",
         "zh-TW": "Google 地圖會找出確切位置"
       },
       "default": {
-        "cs": "80 Spadina Ave, Toronto",
-        "da": "80 Spadina Ave, Toronto",
-        "de": "80 Spadina Ave, Toronto",
-        "en": "80 Spadina Ave, Toronto",
-        "es": "80 Spadina Ave, Toronto",
-        "fi": "Aleksanterinkatu 15, Helsinki",
-        "fr": "80 Spadina Ave, Toronto",
-        "it": "80 Spadina Ave, Toronto",
-        "ja": "80 Spadina Ave, Toronto",
-        "ko": "토론토 스파디나 에버뉴 80",
-        "nb": "Eksempelgaten 123, Oslo",
-        "nl": "Dorpsweg 1, Arnhem",
-        "pl": "80 Spadina Ave, Toronto",
-        "pt-BR": "80 Spadina Ave, Toronto",
-        "pt-PT": "80 Spadina Ave, Toronto",
-        "sv": "Sveavägen 180, Stockholm",
-        "th": "80 Spadina Ave, Toronto",
-        "tr": "80 Spadina Ave, Toronto",
-        "vi": "80 Spadina Ave, Toronto",
-        "zh-CN": "80 Spadina Ave, Toronto",
-        "zh-TW": "80 Spadina Ave, Toronto"
+        "cs": "301 Front St W, Toronto",
+        "da": "301 Front St W, Toronto",
+        "de": "4141 Pierre-de Coubertin Ave, Montreal",
+        "en": "301 Front St W, Toronto",
+        "es": "301 Front St W, Toronto",
+        "fi": "301 Front St W, Toronto",
+        "fr": "Arsenalo g. 5, Vilnius",
+        "it": "301 Front St W, Toronto",
+        "ja": "301 Front St W, Toronto",
+        "ko": "토론토, 프론트 스트리트 W 301",
+        "nb": "301 Front St W, Toronto",
+        "nl": "301 Front St W, Toronto",
+        "pl": "301 Front St W, Toronto",
+        "pt-BR": "Av. Paulista, 1234, São Paulo",
+        "pt-PT": "301 Front St W, Toronto",
+        "sv": "301 Front St W, Toronto",
+        "th": "301 Front St W, Toronto",
+        "tr": "301 Front St W, Toronto",
+        "vi": "301 Front St W, Toronto",
+        "zh-CN": "301 Front St W, Toronto",
+        "zh-TW": "301 Front St W, Toronto"
       }
     },
     {
@@ -318,7 +318,7 @@
       "label": {
         "cs": "Text odkazu na mapu",
         "da": "Maplinklabel",
-        "de": "Bezeichnung für Kartenlink",
+        "de": "Link auf der Karte",
         "en": "Map link label",
         "es": "Etiqueta de enlace de mapa",
         "fi": "Karttalinkin otsikko",
@@ -341,7 +341,7 @@
       "default": {
         "cs": "Zjistit trasu",
         "da": "Få vejledninger",
-        "de": "Route anfordern",
+        "de": "Wegbeschreibung bekommen",
         "en": "Get directions",
         "es": "Recibir instrucciones",
         "fi": "Hae ohjeet",
@@ -356,7 +356,7 @@
         "pt-PT": "Obter direções",
         "sv": "Få hjälp",
         "th": "ถามเส้นทาง",
-        "tr": "Yol tarifi alın",
+        "tr": "Yol tarifi al",
         "vi": "Nhận chỉ dẫn",
         "zh-CN": "获取指示",
         "zh-TW": "取得路線"
@@ -422,7 +422,7 @@
       "label": {
         "cs": "Klíč API Map Google",
         "da": "Google Maps API-nøgle",
-        "de": "API-Schlüssel für Google Maps",
+        "de": "Google Maps API Key",
         "en": "Google Maps API key",
         "es": "Registrar una clave API de Google Maps",
         "fi": "Google Mapsin API -avain",
@@ -445,7 +445,7 @@
       "info": {
         "cs": "Pokud chcete zobrazit mapu, musíte si [zaregistrovat klíč API Map Google](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key)",
         "da": "Du skal [registrere en Google Maps API-nøgle](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) for at vise kortet",
-        "de": "Du musst [einen Google Maps-API-Schlüssel registrieren](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key), um die Karte anzuzeigen",
+        "de": "Sie müssen [einen Google Maps-API-Schlüssel](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) registrieren, um die Karte anzuzeigen",
         "en": "You’ll need to [register a Google Maps API Key](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) to display the map",
         "es": "Deberás [registrar una clave API de Google Maps](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) para mostrar el plano",
         "fi": "Sinun on [rekisteröitävä Google Maps -sovellusliittymän avain](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) näyttääksesi kartan",
@@ -472,7 +472,7 @@
       "label": {
         "cs": "Obrázek",
         "da": "Billede",
-        "de": "Bild",
+        "de": "Foto",
         "en": "Image",
         "es": "Imagen",
         "fi": "Kuva",
@@ -495,11 +495,11 @@
       "info": {
         "cs": "Zobrazí se v případě, že se mapa nenačte",
         "da": "Vises, hvis kortet ikke indlæses",
-        "de": "Wird angezeigt, wenn die Karte nicht geladen wird",
+        "de": "Anzeigen, wenn Karte nicht lädt",
         "en": "Displayed if the map isn’t loaded",
         "es": "Aparece si el mapa no está cargado",
         "fi": "Näkyy, jos karttaa ei ole ladattu",
-        "fr": "Affiché si la carte n'est pas chargée",
+        "fr": "Affichée si la carte ne se charge pas",
         "it": "Visualizzato se la mappa non è caricata",
         "ja": "マップが読み込まれない場合に表示されます",
         "ko": "지도가 로드되지 않은 경우 표시됩니다.",
@@ -522,7 +522,7 @@
       "label": {
         "cs": "Pozice obrázku",
         "da": "Placering af billede",
-        "de": "Bildposition",
+        "de": "Foto-Position",
         "en": "Image position",
         "es": "Posición de la imagen",
         "fi": "Kuvan sijainti",
@@ -550,7 +550,7 @@
             "da": "Øverst til venstre",
             "de": "Oben links",
             "en": "Top left",
-            "es": "Arriba a la izquierda",
+            "es": "Superior izquierda",
             "fi": "Ylhäällä vasemmalla",
             "fr": "En haut à gauche",
             "it": "In alto a sinistra",
@@ -574,9 +574,9 @@
           "label": {
             "cs": "Nahoře ve středu",
             "da": "Øverst i midten",
-            "de": "Oben zentriert",
+            "de": "Oben Mitte",
             "en": "Top center",
-            "es": "Centrar arriba",
+            "es": "Superior centrada",
             "fi": "Keskellä ylhäällä",
             "fr": "En haut au centre",
             "it": "In alto al centro",
@@ -602,7 +602,7 @@
             "da": "Øverst til højre",
             "de": "Oben rechts",
             "en": "Top right",
-            "es": "Arriba a la derecha",
+            "es": "Superior derecha",
             "fi": "Ylhäällä oikealla",
             "fr": "En haut à droite",
             "it": "In alto a destra",
@@ -626,12 +626,12 @@
           "label": {
             "cs": "Uprostřed vlevo",
             "da": "Midt på til venstre",
-            "de": "Mittig links",
+            "de": "Mitte links",
             "en": "Middle left",
-            "es": "Centro a la izquierda",
+            "es": "Al medio a la izquierda",
             "fi": "Keskellä vasemmalla",
             "fr": "Au milieu à gauche",
-            "it": "Centrale a sinistra",
+            "it": "Nel mezzo a sinistra",
             "ja": "中央部左側",
             "ko": "왼쪽 중간",
             "nb": "Midt til venstre",
@@ -652,12 +652,12 @@
           "label": {
             "cs": "Uprostřed ve středu",
             "da": "Midt på centreret",
-            "de": "Mittig zentriert",
+            "de": "Mitte mittig",
             "en": "Middle center",
-            "es": "Centro",
+            "es": "Centrada en el medio",
             "fi": "Keskellä keskellä",
-            "fr": "Centré au milieu",
-            "it": "Al centro",
+            "fr": "Centrée au milieu",
+            "it": "In mezzo",
             "ja": "中心",
             "ko": "가운데 중간",
             "nb": "Midt i senter",
@@ -678,12 +678,12 @@
           "label": {
             "cs": "Uprostřed vpravo",
             "da": "Midt på til højre",
-            "de": "Mittig rechts",
+            "de": "Mitte rechts",
             "en": "Middle right",
-            "es": "Centro a la derecha",
+            "es": "Centrado a la derecha",
             "fi": "Keskellä oikealla",
             "fr": "Au milieu à droite",
-            "it": "Centrale a destra",
+            "it": "Nel mezzo a destra",
             "ja": "中央部右側",
             "ko": "오른쪽 중간",
             "nb": "Midt til høyre",
@@ -706,7 +706,7 @@
             "da": "Nederst til venstre",
             "de": "Unten links",
             "en": "Bottom left",
-            "es": "Abajo a la izquierda",
+            "es": "Inferior izquierda",
             "fi": "Alhaalla vasemmalla",
             "fr": "En bas à gauche",
             "it": "In basso a sinistra",
@@ -730,9 +730,9 @@
           "label": {
             "cs": "Dole ve středu",
             "da": "Nederst i midten",
-            "de": "Unten zentriert",
+            "de": "Unten mittig",
             "en": "Bottom center",
-            "es": "Centro abajo",
+            "es": "Inferior centrada",
             "fi": "Keskellä alhaalla",
             "fr": "En bas au centre",
             "it": "In basso al centro",
@@ -758,7 +758,7 @@
             "da": "Nederst til højre",
             "de": "Unten rechts",
             "en": "Bottom right",
-            "es": "Abajo a la derecha",
+            "es": "Inferior derecha",
             "fi": "Alhaalla oikealla",
             "fr": "En bas à droite",
             "it": "In basso a destra",

@@ -1,23 +1,23 @@
 {%- if section.settings.show_product_recommendations -%}
   {%- if recommendations.performed -%}
     {%- if recommendations.products_count > 0 -%}
-      <div class="product-recommendations">
-        <div class="section-header text-center">
-          {%- if section.settings.heading != blank -%}
-            <h2 class="h1 section-header__title">{{ section.settings.heading | escape }}</h2>
-            <hr class="hr--small">
-          {%- endif -%}
-        </div>
-        <div class="grid-uniform">
-          {% assign grid_item_width = 'small--one-half medium--one-half large--one-quarter' %}
+      <div class="product-recommendations__inner">
+        {%- if section.settings.heading != blank -%}
+          <div class="section-header text-center">
+            <h2>{{ section.settings.heading | escape }}</h2>
+          </div>
+        {%- endif -%}
+        <ul class="grid grid--uniform grid--view-items">
           {%- for product in recommendations.products -%}
-            {% include 'product-grid-item' %}
+            <li class="grid__item small--one-half medium-up--one-quarter">
+              {% include 'product-card-grid', max_height: 250, product: product, show_vendor: section.settings.show_vendor %}
+            </li>
           {%- endfor -%}
-        </div>
+        </ul>
       </div>
     {%- endif -%}
   {%- else  -%}
-    <div data-base-url="{{ routes.product_recommendations_url }}" data-product-id="{{ product.id }}" data-section-id="{{ section.id }}" data-section-type="product-recommendations"></div>
+    <div class="page-width" data-base-url="{{ routes.product_recommendations_url }}" data-product-id="{{ product.id }}" data-section-id="{{ section.id }}" data-section-type="product-recommendations"></div>
   {%- endif -%}
 {%- endif -%}
 
@@ -91,8 +91,8 @@
         "pt-PT": "As recomendações dinâmicas mudam e melhoram com o tempo. [Saiba mais](https://help.shopify.com/en/themes/development/recommended-products)",
         "sv": "Dynamiska rekommendationer ändras och förbättras med tiden. [Läs mer](https://help.shopify.com/en/themes/development/recommended-products)",
         "th": "คำแนะนำแบบไดนามิกนั้นเปลี่ยนแปลงและถูกปรับปรุงให้ดีขึ้นตลอดเวลา [ดูข้อมูลเพิ่มเติม](https://help.shopify.com/en/themes/development/recommended-products)",
-        "tr": "Dinamik önerileri zamanla değişir ve gelişir. [Daha fazla bilgi edinin](https://help.shopify.com/en/themes/development/recommended-products)",
-        "vi": "Đề xuất động thay đổi và cải thiện theo thời gian. [Tìm hiểu thêm](https://help.shopify.com/en/themes/development/recommended-products)",
+        "tr": "Dinamik öneriler zamanla değişir ve gelişir. [Daha fazla bilgi edinin](https://help.shopify.com/en/themes/development/recommended-products)",
+        "vi": "Đề xuất động sẽ được thay đổi và cải thiện theo thời gian. [Tìm hiểu thêm](https://help.shopify.com/en/themes/development/recommended-products)",
         "zh-CN": "动态推荐会随着时间而变化和改进。[了解详细信息](https://help.shopify.com/en/themes/development/recommended-products)",
         "zh-TW": "動態推薦會隨著時間改變與改進。[深入瞭解](https://help.shopify.com/en/themes/development/recommended-products)"
       },
@@ -147,6 +147,34 @@
         "zh-CN": "您可能还喜欢",
         "zh-TW": "您也可能喜歡"
       }
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": {
+        "cs": "Zobrazit dodavatele",
+        "da": "Vis leverandør",
+        "de": "Lieferanten anzeigen",
+        "en": "Show vendor",
+        "es": "Mostrar proveedor",
+        "fi": "Näytä myyjä",
+        "fr": "Afficher les vendeurs",
+        "it": "Mostra fornitore",
+        "ja": "販売元を表示する",
+        "ko": "공급업체 표시",
+        "nb": "Vis leverandør",
+        "nl": "Leverancier weergeven",
+        "pl": "Pokaż dostawcę",
+        "pt-BR": "Exibir fabricante",
+        "pt-PT": "Mostrar fornecedor",
+        "sv": "Visa säljare",
+        "th": "แสดงผู้ขาย",
+        "tr": "Satıcıyı göster",
+        "vi": "Hiển thị nhà cung cấp",
+        "zh-CN": "显示厂商",
+        "zh-TW": "顯示廠商"
+      },
+      "default": false
     }
   ]
 }
